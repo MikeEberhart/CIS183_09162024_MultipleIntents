@@ -13,10 +13,15 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity
+{
     Button btn_j_goToAddPet;
     ListView lv_j_listOfPets;
     Intent intent_j_addNewPet;
+    static ArrayList<Pet> listOfPets = new ArrayList<>();
+    PetListAdapter adapter;
     //this is to show that when we load an intent it will always be a new load
     //data will not be retained between loads
     //we change this variable below to 99 but when we come back from
@@ -28,22 +33,26 @@ public class MainActivity extends AppCompatActivity {
     int numberTestingIfNewLoad = 50;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
         Log.d("VALUE TESTING ON LOAD: ", numberTestingIfNewLoad + "");
         btn_j_goToAddPet = findViewById(R.id.btn_v_main_addNewPet);
         lv_j_listOfPets  = findViewById(R.id.lv_v_listOfPets);
-
         Intent cameFrom = getIntent();
-        Bundle infoPassedToMe = cameFrom.getExtras();
 
-        if(infoPassedToMe != null)
+
+        if(cameFrom.getSerializableExtra("petData") != null)
         {
-            String name = infoPassedToMe.getString("Name");
-
-            Log.d("INFO FROM ADD PET", name);
+            Pet petData = (Pet) cameFrom.getSerializableExtra("petData");
+            listOfPets.add(petData);
+            Log.d("INFO FROM ADD PET", listOfPets.get(listOfPets.size() - 1).getName());
+        }
+        else
+        {
+            addDummyDataToArrayList();
         }
 
 
@@ -53,6 +62,30 @@ public class MainActivity extends AppCompatActivity {
         intent_j_addNewPet = new Intent(MainActivity.this, AddNewPet.class);
         //setup the button listener
         addNewPetButtonListener();
+        fillListView();
+    }
+
+    private void fillListView(){
+        adapter = new PetListAdapter(this, listOfPets);
+        lv_j_listOfPets.setAdapter(adapter);
+    }
+
+    private void addDummyDataToArrayList(){
+        Pet newPet = new Pet("Tito", 6, Pet.PetType.getPetAt(0));
+        listOfPets.add(newPet);
+
+        newPet = new Pet("Willow", 3, Pet.PetType.getPetAt(0));
+        listOfPets.add(newPet);
+
+        newPet = new Pet("Abigail", 1, Pet.PetType.getPetAt(3));
+        listOfPets.add(newPet);
+
+        newPet = new Pet("Hiss", 12, Pet.PetType.getPetAt(2));
+        listOfPets.add(newPet);
+
+        newPet = new Pet("Meow", 15, Pet.PetType.getPetAt(1));
+        listOfPets.add(newPet);
+
     }
 
     private void addNewPetButtonListener()
@@ -71,4 +104,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
 }
