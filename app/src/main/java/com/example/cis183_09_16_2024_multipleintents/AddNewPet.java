@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,9 +24,9 @@ public class AddNewPet extends AppCompatActivity {
     EditText et_j_petAge;
     Spinner sp_j_DropDown;
     ArrayAdapter<String> adapter;
-
+    TextView tv_j_addNewType;
     String petType = Pet.PetType.getPetAt(0);
-
+    Intent addNewType;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,11 +37,13 @@ public class AddNewPet extends AppCompatActivity {
         et_j_petName = findViewById(R.id.et_v_name);
         et_j_petAge = findViewById(R.id.et_v_age);
         sp_j_DropDown = findViewById(R.id.sp_v_typesDropDown);
-
+        tv_j_addNewType = findViewById(R.id.tv_v_addNewType);
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, Pet.PetType.getAllPetTypes());
         sp_j_DropDown.setAdapter(adapter);
 
+        addNewType = new Intent(AddNewPet.this, AddNewPetType.class);
         intent_j_MainActivity = new Intent(AddNewPet.this, MainActivity.class);
+
         //code to get info passed from mainactivity.java
         //get the intent that called me
         Intent cameFrom = getIntent();
@@ -53,7 +56,18 @@ public class AddNewPet extends AppCompatActivity {
 
         addPetButtonListener();
         spinnerEventListener();
+        addNewTypeEventListener();
 
+    }
+
+    private void addNewTypeEventListener()
+    {
+        tv_j_addNewType.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(addNewType);
+            }
+        });
     }
 
     private void spinnerEventListener(){
